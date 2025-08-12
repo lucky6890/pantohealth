@@ -1,19 +1,15 @@
 import { Module } from '@nestjs/common';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
-import { RabbitmqService } from './rabbitmq/rabbitmq.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { SignalModule } from './signal/signal.module';
 
 @Module({
-  imports: [RabbitmqModule],
+  imports: [
+    MongooseModule.forRoot('mongodb://admin:admin123@mongodb:27017'),
+    RabbitmqModule,
+    SignalModule,
+  ],
   controllers: [],
-  providers: [RabbitmqService],
+  providers: [],
 })
-export class AppModule {
-  constructor(private readonly rabbitmqService: RabbitmqService) {}
-
-  async onModuleInit() {
-    await this.rabbitmqService.consumeMessages('x-ray-data', (message) => {
-      console.log('Received message:', message);
-      // Process your message here
-    });
-  }
-}
+export class AppModule {}
