@@ -1,21 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type SignalDocument = HydratedDocument<Signal>;
 
 @Schema()
 export class Signal {
   @Prop()
-  deviceId: string;
+  deviceId: String;
 
   @Prop()
-  time: string;
+  time: Number;
 
   @Prop()
-  dataLength: string;
+  dataLength: Number;
 
   @Prop()
-  dataVolume: string;
+  dataVolume: [Number | Types.Array<Number>];
 }
 
 export const SignalSchema = SchemaFactory.createForClass(Signal);

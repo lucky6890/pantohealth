@@ -1,10 +1,17 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppService } from './app.service';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { RabbitmqService } from './rabbitmq/rabbitmq.service';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [RabbitmqModule],
+  controllers: [],
+  providers: [AppService, RabbitmqService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly service: AppService) {}
+
+  async onModuleInit() {
+    await this.service.sendMessages();
+  }
+}

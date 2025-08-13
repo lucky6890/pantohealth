@@ -63,6 +63,7 @@ services:
     depends_on:
       - rabbitmq
       - mongodb
+      - signals-sender
     networks:
       - signals_network
     volumes:

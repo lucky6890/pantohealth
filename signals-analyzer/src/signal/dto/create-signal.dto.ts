@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateSignalDto {
   @IsString()
@@ -7,8 +7,8 @@ export class CreateSignalDto {
   @IsString()
   time: string;
 
-  @IsString()
-  dataLength: string;
+  @IsNumber()
+  dataLength: number;
 
   @IsString()
   dataVolume: string;
