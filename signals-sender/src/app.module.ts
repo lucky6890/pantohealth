@@ -12,6 +12,8 @@ export class AppModule implements OnModuleInit {
   constructor(private readonly service: AppService) {}
 
   async onModuleInit() {
-    await this.service.sendMessages();
+    setInterval(async () => {
+      await this.service.sendMessages();
+    }, 20000);
   }
 }

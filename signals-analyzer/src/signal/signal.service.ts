@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Signal } from './signal.schema';
 import { Model } from 'mongoose';
@@ -22,12 +26,67 @@ export class SignalService {
       transformedData.time = parsedData[key].time;
     }
     transformedData.dataLength = transformedData.dataVolume.length;
-    const signal = await this.create(transformedData);
-    console.log(signal);
+    await this.create(transformedData);
   }
 
   async create(data: CreateSignalDto): Promise<Signal> {
-    const createdSignal = new this.model(data);
-    return createdSignal.save();
+    try {
+      const createdSignal = new this.model(data);
+      return createdSignal.save();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getAll(page: number, limit: number) {
+    try {
+      const skip = (page - 1) * limit;
+      const data = await this.model.find().skip(skip).limit(limit).exec();
+      const totalCount = await this.model.countDocuments().exec();
+
+      return {
+        data,
+        totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+      };
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getOne(id: string) {
+    try {
+      const data = await this.model.findById(id);
+      if (!data) {
+        throw new NotFoundException();
+      }
+      return {
+        data,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  // We Can (or should) use soft delete with a flag like isDeleted but in this app i choose to show the hard delete scenario...
+  async removeOne(id: string) {
+    try {
+      const data = await this.model.deleteOne({
+        _id: id,
+      });
+
+      if (data.deletedCount === 1) {
+        return {
+          data: null,
+          message: 'Signal removed successfully!',
+        };
+      } else {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }
