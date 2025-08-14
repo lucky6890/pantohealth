@@ -59,6 +59,7 @@ export class SignalService {
   async getOne(id: string) {
     try {
       const data = await this.model.findById(id);
+      console.log(data);
       if (!data) {
         throw new NotFoundException();
       }
@@ -66,7 +67,7 @@ export class SignalService {
         data,
       };
     } catch (error) {
-      throw new InternalServerErrorException();
+      return error;
     }
   }
 
@@ -86,7 +87,7 @@ export class SignalService {
         throw new NotFoundException();
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      return error;
     }
   }
 }
