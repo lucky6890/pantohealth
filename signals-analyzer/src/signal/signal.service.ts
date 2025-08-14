@@ -59,7 +59,6 @@ export class SignalService {
   async getOne(id: string) {
     try {
       const data = await this.model.findById(id);
-      console.log(data);
       if (!data) {
         throw new NotFoundException();
       }
